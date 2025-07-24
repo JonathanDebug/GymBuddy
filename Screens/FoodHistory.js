@@ -11,41 +11,32 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
+import { getFoodDB } from "../initDB";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const FoodHistory = ({ navigation }) => {
   const [foods, setFoods] = useState([]);
-  const [db, setDB] = useState(null);
 
   useEffect(() => {
-    const initalizeDB = async () => {
+    const db = getFoodDB();
+    if (!db) {
+      console.log("Database is not initialized yet.");
+      return;
+    }
+    const getFoods = async () => {
+      const db = getFoodDB();
       try {
-        const database = await SQLite.openDatabaseAsync("food.db");
-        setDB(database);
-        console.log("Connected to food.db on FoodHistory!");
+        const result = await db.getAllAsync(
+          "SELECT * FROM food ORDER BY date DESC"
+        );
+        setFoods(result);
+        console.log(result);
       } catch (error) {
-        console.log("Error connecting to db in FoodHistory", error);
+        console.log("Error getting data:", error);
       }
     };
-    initalizeDB();
-  }, []); // Adding the ,[] makes it so it runs once
-
-  useEffect(() => {
-    if (db) {
-      getFoods();
-    }
-  }, [db]); // Runs only when `db` is set
-
-  const getFoods = async () => {
-    try {
-      const result = await db.getAllAsync(
-        "SELECT * FROM food ORDER BY date DESC"
-      );
-      setFoods(result);
-      console.log(result);
-    } catch (error) {
-      console.log("Error getting data:", error);
-    }
-  };
+    getFoods();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

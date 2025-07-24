@@ -29,6 +29,7 @@ import FoodTracker from "./Screens/FoodTracker";
 import FoodHistory from "./Screens/FoodHistory";
 import WeightTracker from "./Screens/WeightTracker";
 import WeightHistory from "./Screens/WeightHistory";
+import WorkoutStats from "./Screens/WorkoutStats";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -43,18 +44,29 @@ const Stack = createNativeStackNavigator();
 console.log("Running App.js");
 useEffect;
 export default function App() {
+  const [dbReady, setDbReady] = useState(false);
   useEffect(() => {
     const initializeDatabase = async () => {
       try {
         await initDB();
+        setDbReady(true);
         console.log("Databases initialized successfully.");
       } catch (error) {
-        console.error("Error initializing database:", error);
+        console.error("Error initializing databases:", error);
       }
     };
 
     initializeDatabase();
   }, []); // Empty dependency array ensures this runs only once
+
+  if (!dbReady) {
+    // Show a loading screen or spinner while DB is initializing
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading database...</Text>
+      </View>
+    );
+  }
 
   return (
     <PetProvider>
@@ -75,7 +87,7 @@ export default function App() {
           <Stack.Screen
             name="Workout History"
             component={WorkoutScreen}
-            options={{ headerShown: false }}
+            options={{ headerShown: true }}
           />
 
           <Stack.Screen
@@ -95,6 +107,12 @@ export default function App() {
           <Stack.Screen
             name="Weight"
             component={WeightTracker}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="Workout Stats"
+            component={WorkoutStats}
             options={{ headerShown: false }}
           />
 

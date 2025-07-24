@@ -5,13 +5,19 @@ import * as SQLite from "expo-sqlite";
 import Buddy from "../models/Buddy";
 export const PetContext = createContext();
 import porygonGif from "../assets/porygon.gif";
+import { getPetDB } from "../initDB";
+
 //constructor(name,level,image,hunger,targetCalories,strength,stage)
 export const PetProvider = ({ children }) => {
   const initialPet = new Buddy("Charles", 1, porygonGif, 0, 2000, 0, 1);
   const [pet, setPet] = useState(initialPet);
-  const [db, setDB] = useState(null);
 
-  const loadPet = async (db) => {
+  const loadPet = async () => {
+    const db = getPetDB();
+    if (!db) {
+      console.log("Pet DB not initialized yet.");
+      return;
+    }
     const result = await db.getAllAsync("SELECT * FROM pet LIMIT 1");
     if (result.length === 0) {
       // No pet in DB, insert default one
@@ -58,6 +64,7 @@ export const PetProvider = ({ children }) => {
 
   // Save pet state to DB
   const savePet = async () => {
+    const db = getPetDB();
     if (!db || !pet) return;
     try {
       await db.runAsync(
@@ -88,17 +95,7 @@ export const PetProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const openDB = async () => {
-      try {
-        const database = await SQLite.openDatabaseAsync("pet.db");
-        setDB(database);
-        await loadPet(database);
-      } catch (error) {
-        console.log("Error accessing pet table:", error);
-      }
-    };
-
-    openDB();
+    loadPet();
   }, []); // Empty dependency array ensures this runs only once
 
   return (

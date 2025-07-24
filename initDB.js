@@ -1,19 +1,24 @@
 // initDB.js
 import * as SQLite from "expo-sqlite";
+let workoutsDatabase = null;
+let foodDatabase = null;
+let weightDatabase = null;
+let petDatabase = null;
+
 export const initDB = async () => {
   try {
     // Workouts Database Initialization
     console.log("Initializing workouts database...");
-    const database = await SQLite.openDatabaseAsync("workouts.db");
+    workoutsDatabase = await SQLite.openDatabaseAsync("workouts.db");
 
     // Check if the table exists
-    const result = await database.getAllAsync(
+    const result = await workoutsDatabase.getAllAsync(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='workouts';"
     );
 
     if (result.length > 0) console.log("Table workouts already exists!");
     else {
-      await database.execAsync(
+      await workoutsDatabase.execAsync(
         "CREATE TABLE IF NOT EXISTS workouts(name TEXT, weight DOUBLE, reps INTEGER, date TEXT);"
       );
       console.log("Table workouts created!");
@@ -21,7 +26,7 @@ export const initDB = async () => {
 
     // Food Database Initialization
     console.log("Initializing food database...");
-    const foodDatabase = await SQLite.openDatabaseAsync("food.db");
+    foodDatabase = await SQLite.openDatabaseAsync("food.db");
     const foodResult = await foodDatabase.getAllAsync(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='food';"
     );
@@ -36,7 +41,7 @@ export const initDB = async () => {
 
     // Weight Database Initialization
     console.log("Initializing weight database...");
-    const weightDatabase = await SQLite.openDatabaseAsync("weight.db");
+    weightDatabase = await SQLite.openDatabaseAsync("weight.db");
     const weightResult = await weightDatabase.getAllAsync(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='weight';"
     );
@@ -56,7 +61,7 @@ export const initDB = async () => {
   // Pet Database Initialization
   try {
     console.log("Initializing pet database...");
-    const petDatabase = await SQLite.openDatabaseAsync("pet.db");
+    petDatabase = await SQLite.openDatabaseAsync("pet.db");
     const petResult = await petDatabase.getAllAsync(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='pet';"
     );
@@ -73,3 +78,8 @@ export const initDB = async () => {
     console.error("Error initializing pet database:", error);
   }
 };
+
+export const getWorkoutsDB = () => workoutsDatabase;
+export const getFoodDB = () => foodDatabase;
+export const getWeightDB = () => weightDatabase;
+export const getPetDB = () => petDatabase;

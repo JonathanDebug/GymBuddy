@@ -13,26 +13,12 @@ import * as SQLite from "expo-sqlite";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { getWeightDB } from "../initDB";
 
 const Stack = createNativeStackNavigator();
 
 const WeightTracker = ({ navigation }) => {
   const [weight, setWeight] = useState("");
-  const [db, setDB] = useState(null);
-
-  // Set items only once when the component mounts
-  useEffect(() => {
-    const openDB = async () => {
-      try {
-        const database = await SQLite.openDatabaseAsync("weight.db");
-        setDB(database);
-        console.log("Database weight opened successfully");
-      } catch (error) {
-        console.log("Error accessing table weight:", error);
-      }
-    };
-    openDB();
-  }, []); // Empty dependency array ensures this runs only once
 
   const getFormattedDate = () => {
     const date = new Date();
@@ -44,6 +30,7 @@ const WeightTracker = ({ navigation }) => {
 
   // Handle saving exercises
   const saveWeight = async (weight) => {
+    const db = getWeightDB();
     if (!db) {
       console.log("Database not initialized");
       return;
@@ -70,6 +57,7 @@ const WeightTracker = ({ navigation }) => {
   };
 
   const truncateTable = async () => {
+    const db = getWeightDB();
     if (!db) {
       console.log("Database not initialized");
       return;

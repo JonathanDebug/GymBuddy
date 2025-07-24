@@ -13,6 +13,7 @@ import * as SQLite from "expo-sqlite";
 import { useFonts } from "expo-font";
 import { PetContext } from "./PetContext";
 import Buddy from "../models/Buddy";
+import { getWorkoutsDB } from "../initDB";
 
 const exercises = require("../exercises.json"); // Keep your exercises
 
@@ -23,22 +24,17 @@ const LogScreen = ({ navigation }) => {
   const [numrep, setRep] = useState("");
   const [weigth, setWeigth] = useState("");
   const [workouts, setWorkouts] = useState([]);
-  const [db, setDB] = useState(null);
   const { pet, setPet, savePet } = useContext(PetContext);
+  const [selectedExercise, setSelectedExercise] = useState(null);
+
+  const [pr, setPR] = useState(null);
+  const [lastWeight, setLastWeight] = useState("");
+  const [lastReps, setLastReps] = useState("");
+  const [lastSet, setLastSet] = useState(null);
 
   // Set items only once when the component mounts
   useEffect(() => {
     setItems(exercises);
-    const openDB = async () => {
-      try {
-        const database = await SQLite.openDatabaseAsync("workouts.db");
-        setDB(database);
-        console.log("Database  workouts opened successfully");
-      } catch (error) {
-        console.log("Error accesing table workouts:", error);
-      }
-    };
-    openDB();
   }, []); // Empty dependency array ensures this runs only once
 
   const getFormattedDate = () => {
@@ -51,6 +47,7 @@ const LogScreen = ({ navigation }) => {
 
   // Handle saving exercises
   const saveExercise = async (exercise, weight, reps) => {
+    const db = getWorkoutsDB();
     if (!db) {
       console.log("Database not initialized");
       return;
@@ -91,6 +88,7 @@ const LogScreen = ({ navigation }) => {
   };
 
   const truncateTable = async () => {
+    const db = getWorkoutsDB();
     if (!db) {
       console.log("Database not initialized");
       return;
@@ -102,6 +100,7 @@ const LogScreen = ({ navigation }) => {
       console.log("Error truncating:", error);
     }
   };
+
   const warningTruncateTable = () => {
     Alert.alert(
       "Confirm Delete",
@@ -121,9 +120,31 @@ const LogScreen = ({ navigation }) => {
     );
   };
 
+  const handleExerciseSelect = async (exercise) => {
+    setSelectedExercise(exercise);
+    const db = getWorkoutsDB();
+    if (db) {
+      const result = await db.getFirstAsync(
+        "SELECT weight, reps FROM workouts WHERE name = ? ORDER BY date DESC LIMIT 1",
+        [exercise]
+      );
+      setLastSet(result);
+      console.log("Last Set:", result);
+
+      const pr = await db.getFirstAsync(
+        "SELECT weight, reps FROM (SELECT weight, reps FROM workouts WHERE name = ? ORDER BY weight DESC LIMIT 1) AS pr",
+        [exercise]
+      );
+      console.log("Personal Record:", pr);
+      setPR(pr);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Log your Exercise</Text>
+
+      {/* Dropdown for selecting exercises */}
 
       <DropDownPicker
         open={open}
@@ -134,24 +155,43 @@ const LogScreen = ({ navigation }) => {
         searchable={true}
         placeholder="Select an exercise"
         searchPlaceholder="Type to search..."
+        onChangeValue={handleExerciseSelect}
         style={styles.dropdown}
       />
 
-      <TextInput
-        placeholder="# Reps"
-        value={numrep}
-        onChangeText={setRep}
-        keyboardType="numeric"
-        style={styles.reps_box}
-      />
+      {selectedExercise && (
+        <>
+          <Text>
+            Last Set:{" "}
+            {lastSet
+              ? `${lastSet.weight} lbs, ${lastSet.reps} reps`
+              : "No previous sets"}
+          </Text>
 
-      <TextInput
-        placeholder="Weight"
-        value={weigth}
-        onChangeText={setWeigth}
-        keyboardType="numeric"
-        style={styles.weight_box}
-      />
+          <Text>
+            Personal Record:{" "}
+            {pr
+              ? `${pr.weight} lbs, ${pr.reps} reps`
+              : "No personal record yet"}
+          </Text>
+
+          <TextInput
+            placeholder="# Reps"
+            value={numrep}
+            onChangeText={setRep}
+            keyboardType="numeric"
+            style={styles.reps_box}
+          />
+
+          <TextInput
+            placeholder="Weight"
+            value={weigth}
+            onChangeText={setWeigth}
+            keyboardType="numeric"
+            style={styles.weight_box}
+          />
+        </>
+      )}
 
       <TouchableOpacity
         onPress={() => saveExercise(value, weigth, numrep)}
@@ -170,7 +210,7 @@ const LogScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.option_buttons}
-          onPress={() => navigation.navigate("Workout History")}
+          onPress={() => navigation.navigate("Workout Stats")}
         >
           <Text style={styles.button_text}>Stats</Text>
         </TouchableOpacity>

@@ -10,37 +10,26 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useState, useEffect } from "react";
-import * as SQLite from "expo-sqlite";
+import { Calendar } from "react-native-calendars";
+import { getWorkoutsDB } from "../initDB";
 
 const WorkoutScreen = () => {
   const [workouts, setWorkouts] = useState([]);
-  const [db, setDB] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [items, setItems] = useState([]);
   const [pr, setPR] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [showCalendar, setShowCalendar] = useState(false);
   const exercises = require("../exercises.json");
+
   useEffect(() => {
-    const initalizeDB = async () => {
-      try {
-        const database = await SQLite.openDatabaseAsync("workouts.db");
-        setDB(database);
-        console.log("Connected to workouts.db on workoutScreen!");
-      } catch (error) {
-        console.log("Error connecting to db in workoutScreen", error);
-      }
-    };
-    initalizeDB();
     setItems(exercises);
+    getWorkouts();
   }, []); // Adding the ,[] makes it so it runs once
 
-  useEffect(() => {
-    if (db) {
-      getWorkouts();
-    }
-  }, [db]); // Runs only when `db` is set
-
   const getWorkouts = async () => {
+    const db = getWorkoutsDB();
     try {
       const result = await db.getAllAsync(
         "SELECT * FROM workouts ORDER BY date DESC"
@@ -53,6 +42,7 @@ const WorkoutScreen = () => {
   };
 
   const getExercise = async () => {
+    const db = getWorkoutsDB();
     if (!db) {
       console.log("Database is not initialized yet.");
       return;
@@ -76,6 +66,7 @@ const WorkoutScreen = () => {
   };
 
   const getPR = async () => {
+    const db = getWorkoutsDB();
     if (!db) {
       console.log("Database is not initialized yet.");
       return;
@@ -103,6 +94,41 @@ const WorkoutScreen = () => {
     }
   };
 
+  const filterWorkoutsByDate = async (date, exercise) => {
+    const db = getWorkoutsDB();
+    if (!db) {
+      console.log("Database is not initialized yet.");
+      return;
+    } // Ensure db is initialized
+
+    try {
+      {
+        /* Filtering workouts by date if choice is ALL */
+      }
+      if (exercise === "All" || exercise === "") {
+        const result = await db.getAllAsync(
+          "SELECT * FROM workouts WHERE date = ? ORDER BY date DESC",
+          [date]
+        );
+        setWorkouts(result);
+        console.log("Filtered workouts by date:", result);
+      } else {
+        {
+          /* Filtering workouts by date and exercise */
+        }
+        const result = await db.getAllAsync(
+          "SELECT * FROM workouts WHERE date = ? AND name = ? ORDER BY date DESC",
+          [date, exercise]
+        );
+        setWorkouts(result);
+        console.log("Selected Exercise:", exercise);
+        console.log("Filtered workouts by date and exercise:", result);
+      }
+    } catch (error) {
+      console.log("Error filtering workouts by date:", error);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <DropDownPicker
@@ -114,31 +140,40 @@ const WorkoutScreen = () => {
         searchable={true}
         placeholder="Select an exercise"
         searchPlaceholder="Type to search..."
-        onChangeValue={(selectedValue) => {
-          setValue(selectedValue);
-          getExercise();
-          getPR();
-        }}
         style={styles.dropdown}
       />
-      <View style={styles.pr_container}>
-        <Text style={styles.exercise_text}> PR: {pr.weight} lbs </Text>
 
-        <Text style={styles.exercise_text}> Reps (PR): {pr.reps} </Text>
-      </View>
+      <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
+        <Text style={styles.calendar_button}> Select Day </Text>
+      </TouchableOpacity>
 
-      {workouts.length > 0 ? (
+      {showCalendar && (
+        <Calendar
+          onDayPress={(day) => {
+            setSelectedDate(day.dateString);
+            console.log("Selected date:", day.dateString);
+            setShowCalendar(false);
+            filterWorkoutsByDate(day.dateString, value);
+          }}
+          markedDates={{
+            [selectedDate]: { selected: true, marked: true },
+          }}
+        />
+      )}
+
+      {workouts.length > 0 && value != "" ? (
         workouts.map((workout, index) => (
           <View key={index} style={styles.exercise_box}>
             <Text style={styles.exercise_text}>
               {workout.name} Date: {workout.date}
             </Text>
-            <Text>Weight: {workout.weight} lbs</Text>
-            <Text>Reps: {workout.reps}</Text>
+            <Text>
+              {workout.weight} lbs x {workout.reps} reps
+            </Text>
           </View>
         ))
       ) : (
-        <Text> </Text>
+        <Text>No Workouts Found</Text>
       )}
     </SafeAreaView>
   );
@@ -164,6 +199,13 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "gold",
     alignItems: "center",
+  },
+  calendar_button: {
+    backgroundColor: "#0077b6",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginVertical: 30,
   },
 });
 

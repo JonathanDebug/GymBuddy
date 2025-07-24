@@ -15,32 +15,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PetContext } from "./PetContext";
 import Buddy from "../models/Buddy";
+import { getFoodDB } from "../initDB";
 
 const Stack = createNativeStackNavigator();
 
 const FoodTracker = ({ navigation }) => {
   const [fname, setFname] = useState("");
   const [calories, setCalories] = useState("");
-  const [db, setDB] = useState(null);
+
   const { pet, setPet, savePet } = useContext(PetContext);
-
-  // Set items only once when the component mounts
-  useEffect(() => {
-    const openDB = async () => {
-      try {
-        const database = await SQLite.openDatabaseAsync("food.db");
-        setDB(database);
-        console.log("Database food opened successfully");
-      } catch (error) {
-        console.log("Error accesing table food:", error);
-      }
-    };
-
-    openDB();
-  }, []); // Empty dependency array ensures this runs only once
 
   useEffect(() => {
     const checkDate = async () => {
+      const db = getFoodDB();
       if (!db) {
         console.log("Database not initialized");
         return;
@@ -72,11 +59,8 @@ const FoodTracker = ({ navigation }) => {
       }
     };
 
-    if (db) {
-      console.log("Database is ready to use");
-      checkDate();
-    }
-  }, [db]);
+    checkDate();
+  }, []);
 
   const getFormattedDate = () => {
     const date = new Date();
@@ -88,6 +72,7 @@ const FoodTracker = ({ navigation }) => {
 
   // Handle saving exercises
   const saveFood = async (name, calories) => {
+    const db = getFoodDB();
     if (!db) {
       console.log("Database not initialized");
       return;
@@ -129,6 +114,7 @@ const FoodTracker = ({ navigation }) => {
   };
 
   const truncateTable = async () => {
+    const db = getFoodDB();
     if (!db) {
       console.log("Database not initialized");
       return;
