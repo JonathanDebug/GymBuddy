@@ -24,14 +24,16 @@ export default function HomeScreen() {
         flex: 1,
       }}
     >
+      // Pet status bar
       <View style={styles.topContainer}>
         <Text style={styles.petName}> {pet.name}</Text>
         <Text style={styles.petStats}>
           {" "}
-          Level: {pet.level} Hunger: {pet.hunger} Strength: {pet.strength}
+          Level: {pet.level} Hunger: {pet.hunger} Strength: {pet.strength}{" "}
+          Happiness: {pet.happiness} Stage: {pet.stage}
         </Text>
       </View>
-
+      // Pet Image and Rest Button
       <View style={styles.centerContainer}>
         <Image source={pet.image} style={styles.pet} />
 
@@ -42,7 +44,7 @@ export default function HomeScreen() {
           <Text>Rest</Text>
         </TouchableOpacity>
       </View>
-
+      // Navigation Buttons
       <View style={styles.navcontainer}>
         <TouchableOpacity
           style={styles.button}
@@ -51,7 +53,10 @@ export default function HomeScreen() {
           <Text>Exercise</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("PetScreen")}
+        >
           <Text>Pet</Text>
         </TouchableOpacity>
 

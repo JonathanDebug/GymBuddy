@@ -7,6 +7,7 @@ import {
   Button,
   Alert,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useState, useEffect } from "react";
@@ -40,18 +41,20 @@ const FoodHistory = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {foods.length > 0 ? (
-        foods.map((food, index) => (
-          <View key={index} style={styles.food_box}>
-            <Text style={styles.exercise_text}>
-              {food.name} Date: {food.date}
-            </Text>
-            <Text>{food.calories} Calories</Text>
-          </View>
-        ))
-      ) : (
-        <Text> </Text>
-      )}
+      <ScrollView>
+        {foods.length > 0 ? (
+          foods.map((food, index) => (
+            <View key={index} style={styles.food_box}>
+              <Text style={styles.exercise_text}>
+                {food.name} Date: {food.date}
+              </Text>
+              <Text>{food.calories} Calories</Text>
+            </View>
+          ))
+        ) : (
+          <Text> </Text>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

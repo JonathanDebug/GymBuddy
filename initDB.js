@@ -61,7 +61,10 @@ export const initDB = async () => {
   // Pet Database Initialization
   try {
     console.log("Initializing pet database...");
+
     petDatabase = await SQLite.openDatabaseAsync("pet.db");
+    petDatabase.runAsync("DROP TABLE IF EXISTS pet");
+
     const petResult = await petDatabase.getAllAsync(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='pet';"
     );
@@ -70,7 +73,7 @@ export const initDB = async () => {
     } else {
       console.log("Creating table pet...");
       await petDatabase.execAsync(
-        "CREATE TABLE IF NOT EXISTS pet(name TEXT, level INTEGER, image TEXT, hunger INTEGER, targetCalories INTEGER, strength INTEGER, stage TEXT);"
+        "CREATE TABLE IF NOT EXISTS pet(pid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, level INTEGER, image TEXT, hunger INTEGER, targetWeight INTEGER, targetCalories INTEGER, strength INTEGER, happiness INTEGER, stage TEXT);"
       );
     }
     console.log("Pet database initialized successfully!");

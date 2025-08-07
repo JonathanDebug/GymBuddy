@@ -7,6 +7,7 @@ import {
   Button,
   Alert,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useState, useEffect } from "react";
@@ -162,16 +163,18 @@ const WorkoutScreen = () => {
       )}
 
       {workouts.length > 0 && value != "" ? (
-        workouts.map((workout, index) => (
-          <View key={index} style={styles.exercise_box}>
-            <Text style={styles.exercise_text}>
-              {workout.name} Date: {workout.date}
-            </Text>
-            <Text>
-              {workout.weight} lbs x {workout.reps} reps
-            </Text>
-          </View>
-        ))
+        <ScrollView>
+          {workouts.map((workout, index) => (
+            <View key={index} style={styles.exercise_box}>
+              <Text style={styles.exercise_text}>
+                {workout.name} Date: {workout.date}
+              </Text>
+              <Text>
+                {workout.weight} lbs x {workout.reps} reps
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
       ) : (
         <Text>No Workouts Found</Text>
       )}

@@ -70,6 +70,7 @@ const LogScreen = ({ navigation }) => {
       console.log("-------------------------------------");
       Alert.alert("Exercised saved!", "Your set has been saved");
       pet.addStrength(weight, reps);
+      pet.checkLevelUp();
       setPet(
         new Buddy(
           pet.name,

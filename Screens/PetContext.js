@@ -7,9 +7,9 @@ export const PetContext = createContext();
 import porygonGif from "../assets/porygon.gif";
 import { getPetDB } from "../initDB";
 
-//constructor(name,level,image,hunger,targetCalories,strength,stage)
+//constructor(name,level,image,hunger,targetCalories,strength,happiness,stage)
 export const PetProvider = ({ children }) => {
-  const initialPet = new Buddy("Charles", 1, porygonGif, 0, 2000, 0, 1);
+  const initialPet = new Buddy("Charles", 1, porygonGif, 0, 2000, 180, 0, 0, 1);
   const [pet, setPet] = useState(initialPet);
 
   const loadPet = async () => {
@@ -21,17 +21,39 @@ export const PetProvider = ({ children }) => {
     const result = await db.getAllAsync("SELECT * FROM pet LIMIT 1");
     if (result.length === 0) {
       // No pet in DB, insert default one
-      const defaultPet = new Buddy("Charles", 1, porygonGif, 0, 2000, 0, 1);
+      const defaultPet = new Buddy(
+        "Charles",
+        1,
+        porygonGif,
+        0,
+        2000,
+        180,
+        0,
+        0,
+        1
+      );
+
+      // schema: pet(pid INTEGER PRIMARY KEY AUTOINCREMENT,
+      // name TEXT,
+      // level INTEGER,
+      // image TEXT,
+      // hunger INTEGER,
+      // targetCalories INTEGER,
+      // strength INTEGER,
+      // happiness INTEGER,
+      // stage TEXT);
 
       await db.runAsync(
-        "INSERT INTO pet (name, level, image, hunger, targetCalories, strength, stage) VALUES (?, ?, ?, ?, ?, ?, ?);",
+        "INSERT INTO pet (name, level, image, hunger, targetCalories, targetWeight, strength, happiness, stage) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
         [
           defaultPet.name,
           defaultPet.level,
           defaultPet.image,
           defaultPet.hunger,
           defaultPet.targetCalories,
+          defaultPet.targetWeight,
           defaultPet.strength,
+          defaultPet.happiness,
           defaultPet.stage,
         ]
       );
@@ -39,13 +61,16 @@ export const PetProvider = ({ children }) => {
       console.log("Default pet inserted");
     } else {
       const row = result[0];
+      console.log("Pet found in DB:", row);
       const loadedPet = new Buddy(
         row.name,
         row.level,
         row.image,
         row.hunger,
         row.targetCalories,
+        row.targetWeight,
         row.strength,
+        row.happiness,
         row.stage
       );
 
@@ -56,7 +81,9 @@ export const PetProvider = ({ children }) => {
       console.log("image: ", loadedPet.image);
       console.log("hunger: ", loadedPet.hunger);
       console.log("targetCalories: ", loadedPet.targetCalories);
+      console.log("targetWeight: ", loadedPet.targetWeight);
       console.log("strength: ", loadedPet.strength);
+      console.log("happiness: ", loadedPet.happiness);
       console.log("stage: ", loadedPet.stage);
       console.log("--------------------------------");
     }
@@ -68,13 +95,15 @@ export const PetProvider = ({ children }) => {
     if (!db || !pet) return;
     try {
       await db.runAsync(
-        "UPDATE pet SET level = ?, image = ?, hunger = ?, targetCalories = ?, strength = ?, stage = ? WHERE name = ?;",
+        "UPDATE pet SET level = ?, image = ?, hunger = ?, targetWeight, targetCalories = ?, strength = ?, happiness = ?, stage = ? WHERE name = ?;",
         [
           pet.level,
           pet.image,
           pet.hunger,
           pet.targetCalories,
+          pet.targetWeight,
           pet.strength,
+          pet.happiness,
           pet.stage,
           pet.name,
         ]
@@ -86,7 +115,9 @@ export const PetProvider = ({ children }) => {
       console.log("image: ", pet.image);
       console.log("hunger: ", pet.hunger);
       console.log("targetCalories: ", pet.targetCalories);
+      console.log("targetWeight: ", pet.targetWeight);
       console.log("strength: ", pet.strength);
+      console.log("happiness: ", pet.happiness);
       console.log("stage: ", pet.stage);
       console.log("--------------------------------");
     } catch (error) {
