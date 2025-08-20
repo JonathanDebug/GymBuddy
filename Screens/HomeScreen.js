@@ -20,60 +20,59 @@ export default function HomeScreen() {
   return (
     <SafeAreaView
       style={{
-        backgroundColor: "#FDFCDC",
+        backgroundColor: "#1E1E1E",
         flex: 1,
       }}
     >
-      // Pet status bar
+      {/*Pet status bar*/}
       <View style={styles.topContainer}>
         <Text style={styles.petName}> {pet.name}</Text>
         <Text style={styles.petStats}>
-          {" "}
-          Level: {pet.level} Hunger: {pet.hunger} Strength: {pet.strength}{" "}
-          Happiness: {pet.happiness} Stage: {pet.stage}
+          Level: {pet.level} | Hunger: {pet.hunger} | Happiness: {pet.happiness}{" "}
+          | Strength: {pet.strength}
         </Text>
       </View>
-      // Pet Image and Rest Button
+      {/*Pet image and rest button*/}
       <View style={styles.centerContainer}>
         <Image source={pet.image} style={styles.pet} />
 
         <TouchableOpacity
-          style={styles.rest_button}
+          style={styles.navButton}
           onPress={() => navigation.navigate("Timer")}
         >
-          <Text>Rest</Text>
+          <Text style={styles.navButtonText}>Rest</Text>
         </TouchableOpacity>
       </View>
-      // Navigation Buttons
+      {/*Navigation Buttons*/}
       <View style={styles.navcontainer}>
         <TouchableOpacity
-          style={styles.button}
+          style={styles.navButton}
           onPress={() => navigation.navigate("LogScreen")}
         >
-          <Text>Exercise</Text>
+          <Text style={styles.navButtonText}>Exercise</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
+          style={styles.navButton}
           onPress={() => navigation.navigate("PetScreen")}
         >
-          <Text>Pet</Text>
+          <Text style={styles.navButtonText}>Pet</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
+          style={styles.navButton}
           onPress={() => navigation.navigate("Food")}
         >
-          <Text>Food </Text>
+          <Text style={styles.navButtonText}>Food </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
+          style={styles.navButton}
           onPress={() => {
             navigation.navigate("Weight");
           }}
         >
-          <Text>Weight</Text>
+          <Text style={styles.navButtonText}>Weight</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -81,13 +80,29 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  navcontainer: {
-    backgroundColor: "#00AFB9",
-    flex: 1,
-    justifyContent: "space-between",
+  topContainer: {
+    backgroundColor: "#3A7D44",
+    flex: 1.5,
     alignItems: "center",
+    borderBottomLeftRadius: 20, // Top-left corner
+    borderBottomRightRadius: 20, // Top-right corner
+  },
+  centerContainer: {
+    backgroundColor: "#1E1E1E",
+    flex: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+  },
+  navcontainer: {
+    flex: 1.5,
     flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#3A7D44", // Dark green nav
     paddingHorizontal: 10,
+    borderTopLeftRadius: 20, // Top-left corner
+    borderTopRightRadius: 20, // Top-right corner
   },
   logcontainer: {
     flex: 1,
@@ -104,13 +119,7 @@ const styles = StyleSheet.create({
     width: 80,
     alignItems: "center",
   },
-  centerContainer: {
-    backgroundColor: "lightblue",
-    flex: 9,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
+
   rest_button: {
     backgroundColor: "lightgreen",
     padding: 10,
@@ -130,20 +139,47 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   petName: {
-    paddingTop: 30,
+    paddingTop: 40,
     fontWeight: "bold",
+    fontSize: 20,
+    color: "#FFF",
   },
-  petStats: {},
-  topContainer: {
-    backgroundColor: "#0081A7",
-    flex: 1,
-    alignItems: "center",
+  petStats: {
+    color: "#FFF",
+    fontWeight: "bold",
+    textAlign: "center",
   },
+
   background: {
     flex: 1,
     width: "100%",
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  card: {
+    backgroundColor: "#1E1E1E",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  navButton: {
+    backgroundColor: "#2F6033", // Slightly darker green
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#1E4020",
+    width: "24%",
+  },
+  navButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });

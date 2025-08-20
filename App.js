@@ -36,25 +36,30 @@ import WeightTracker from "./Screens/WeightTracker";
 import WeightHistory from "./Screens/WeightHistory";
 import WorkoutStats from "./Screens/WorkoutStats";
 import PetScreen from "./Screens/PetScreen";
+import WeightStats from "./Screens/WeightStats";
+import OverviewScreen from "./Screens/OverviewScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PetProvider } from "./Screens/PetContext";
+import exercises from "./assets/exercises.json";
 
 import Buddy from "./models/Buddy";
-import { initDB } from "./initDB";
+import { initDB, getExercisesDB } from "./initDB";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const Stack = createNativeStackNavigator();
 
 console.log("Running App.js");
 export default function App() {
   const [dbReady, setDbReady] = useState(false);
+
   useEffect(() => {
     const initializeDatabase = async () => {
       try {
         await initDB();
         setDbReady(true);
-        console.log("Databases initialized successfully.");
+        console.log("---- Databases initialized successfully ----");
       } catch (error) {
         console.error("Error initializing databases:", error);
       }
@@ -92,7 +97,7 @@ export default function App() {
             <Stack.Screen
               name="Workout History"
               component={WorkoutScreen}
-              options={{ headerShown: true }}
+              options={{ headerShown: false }}
             />
 
             <Stack.Screen
@@ -107,11 +112,21 @@ export default function App() {
               options={{ headerShown: false }}
             />
 
-            <Stack.Screen name="FoodHistory" component={FoodHistory} />
+            <Stack.Screen
+              name="FoodHistory"
+              component={FoodHistory}
+              options={{ headerShown: false }}
+            />
 
             <Stack.Screen
               name="Weight"
               component={WeightTracker}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="WeightStats"
+              component={WeightStats}
               options={{ headerShown: false }}
             />
 
@@ -127,7 +142,17 @@ export default function App() {
               options={{ headerShown: false }}
             />
 
-            <Stack.Screen name="WeightHistory" component={WeightHistory} />
+            <Stack.Screen
+              name="OverviewScreen"
+              component={OverviewScreen}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="WeightHistory"
+              component={WeightHistory}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </PetProvider>

@@ -7,9 +7,28 @@ export const PetContext = createContext();
 import porygonGif from "../assets/porygon.gif";
 import { getPetDB } from "../initDB";
 
-//constructor(name,level,image,hunger,targetCalories,strength,happiness,stage)
+// pet constructor(name,level,image,targetCalories,targetWeight)
+
+// constructor(name, image, targetCalories, targetWeight) {
+//     this.name = name;
+//     this.level = 1;
+//     this.image = image;
+//     this.hunger = 0;
+//     this.targetWeight = targetWeight;
+//     this.targetCalories = targetCalories;
+//     this.strength = 0;
+//     this.happiness = 0;
+//     this.stage = stage;
+//     this.mood = "happy";
+//     this.chest_meter = 0;
+//     this.triceps_meter = 0;
+//     this.shoulder_meter = 0;
+//     this.biceps_meter = 0;
+//     this.leg_meter = 0;
+//   }
+
 export const PetProvider = ({ children }) => {
-  const initialPet = new Buddy("Charles", 1, porygonGif, 0, 2000, 180, 0, 0, 1);
+  const initialPet = new Buddy("Charles", porygonGif, 2000, 180);
   const [pet, setPet] = useState(initialPet);
 
   const loadPet = async () => {
@@ -21,40 +40,29 @@ export const PetProvider = ({ children }) => {
     const result = await db.getAllAsync("SELECT * FROM pet LIMIT 1");
     if (result.length === 0) {
       // No pet in DB, insert default one
-      const defaultPet = new Buddy(
-        "Charles",
-        1,
-        porygonGif,
-        0,
-        2000,
-        180,
-        0,
-        0,
-        1
-      );
+      console.log("Pet not found, creating default");
+      const defaultPet = initialPet;
 
-      // schema: pet(pid INTEGER PRIMARY KEY AUTOINCREMENT,
-      // name TEXT,
-      // level INTEGER,
-      // image TEXT,
-      // hunger INTEGER,
-      // targetCalories INTEGER,
-      // strength INTEGER,
-      // happiness INTEGER,
-      // stage TEXT);
-
+      // "pet(pid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, level INTEGER, image TEXT, targetCalories INTEGER, targetWeight INTEGER, hunger INTEGER, strength INTEGER, happiness INTEGER, stage TEXT, mood TEXT, chest_meter INTEGER, triceps_meter INTEGER, back_meter INTEGER, biceps_meter INTEGER, shoulder_meter INTEGER, leg_meter INTEGER);"
       await db.runAsync(
-        "INSERT INTO pet (name, level, image, hunger, targetCalories, targetWeight, strength, happiness, stage) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+        "INSERT INTO pet (name, level, image, targetCalories, targetWeight, hunger, strength, happiness, stage, mood, chest_meter, triceps_meter, back_meter, biceps_meter, shoulder_meter,  leg_meter) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [
           defaultPet.name,
           defaultPet.level,
           defaultPet.image,
-          defaultPet.hunger,
           defaultPet.targetCalories,
           defaultPet.targetWeight,
+          defaultPet.hunger,
           defaultPet.strength,
           defaultPet.happiness,
           defaultPet.stage,
+          defaultPet.mood,
+          defaultPet.chest_meter,
+          defaultPet.triceps_meter,
+          defaultPet.back_meter,
+          defaultPet.biceps_meter,
+          defaultPet.shoulder_meter,
+          defaultPet.leg_meter,
         ]
       );
       setPet(defaultPet);
@@ -64,14 +72,28 @@ export const PetProvider = ({ children }) => {
       console.log("Pet found in DB:", row);
       const loadedPet = new Buddy(
         row.name,
+        row.image,
+        row.targetCalories,
+        row.targetWeight
+      );
+
+      loadedPet.setFullPet(
+        row.name,
         row.level,
         row.image,
-        row.hunger,
         row.targetCalories,
         row.targetWeight,
+        row.hunger,
         row.strength,
         row.happiness,
-        row.stage
+        row.stage,
+        row.mood,
+        row.chest_meter,
+        row.triceps_meter,
+        row.back_meter,
+        row.biceps_meter,
+        row.shoulder_meter,
+        row.leg_meter
       );
 
       setPet(loadedPet);
@@ -85,6 +107,13 @@ export const PetProvider = ({ children }) => {
       console.log("strength: ", loadedPet.strength);
       console.log("happiness: ", loadedPet.happiness);
       console.log("stage: ", loadedPet.stage);
+      console.log("mood: ", loadedPet.mood);
+      console.log("chest_meter: ", loadedPet.chest_meter);
+      console.log("back_meter: ", loadedPet.back_meter);
+      console.log("triceps_meter: ", loadedPet.triceps_meter);
+      console.log("shoulder_meter: ", loadedPet.shoulder_meter);
+      console.log("biceps_meter: ", loadedPet.biceps_meter);
+      console.log("leg_meter: ", loadedPet.leg_meter);
       console.log("--------------------------------");
     }
   };
@@ -93,18 +122,27 @@ export const PetProvider = ({ children }) => {
   const savePet = async () => {
     const db = getPetDB();
     if (!db || !pet) return;
+
+    // pet (name, level, image, targetCalories, targetWeight, hunger, strength, happiness, stage, mood, chest_meter, triceps_meter, back_meter, biceps_meter, shoulder_meter,  leg_meter)
     try {
       await db.runAsync(
-        "UPDATE pet SET level = ?, image = ?, hunger = ?, targetWeight, targetCalories = ?, strength = ?, happiness = ?, stage = ? WHERE name = ?;",
+        "UPDATE pet SET level = ?, image = ?, targetCalories = ?, targetWeight = ?, hunger = ?, strength = ?, happiness = ?, stage = ?, mood = ?, chest_meter = ?, triceps_meter = ?, back_meter = ?, biceps_meter = ?, shoulder_meter = ?, leg_meter = ?  WHERE name = ? ;",
         [
           pet.level,
           pet.image,
-          pet.hunger,
           pet.targetCalories,
           pet.targetWeight,
+          pet.hunger,
           pet.strength,
           pet.happiness,
           pet.stage,
+          pet.mood,
+          pet.chest_meter,
+          pet.triceps_meter,
+          pet.back_meter,
+          pet.biceps_meter,
+          pet.shoulder_meter,
+          pet.leg_meter,
           pet.name,
         ]
       );
@@ -119,6 +157,13 @@ export const PetProvider = ({ children }) => {
       console.log("strength: ", pet.strength);
       console.log("happiness: ", pet.happiness);
       console.log("stage: ", pet.stage);
+      console.log("mood: ", pet.mood);
+      console.log("chest_meter: ", pet.chest_meter);
+      console.log("back_meter: ", pet.back_meter);
+      console.log("triceps_meter: ", pet.triceps_meter);
+      console.log("shoulder_meter: ", pet.shoulder_meter);
+      console.log("biceps_meter: ", pet.biceps_meter);
+      console.log("leg_meter: ", pet.leg_meter);
       console.log("--------------------------------");
     } catch (error) {
       console.log("Error saving pet:", error);

@@ -1,40 +1,183 @@
 class Buddy {
-  constructor(
+  constructor(name, image, targetCalories, targetWeight) {
+    this.name = name;
+    this.level = 1;
+    this.image = image;
+    this.hunger = 0;
+    this.targetWeight = targetWeight;
+    this.targetCalories = targetCalories;
+    this.strength = 0;
+    this.happiness = 0;
+    this.stage = 1;
+    this.mood = "happy";
+    this.chest_meter = 0;
+    this.triceps_meter = 0;
+    this.back_meter = 0;
+    this.biceps_meter = 0;
+    this.shoulder_meter = 0;
+    this.leg_meter = 0;
+  }
+
+  // -----------Setters for Buddy properties---------------
+  setLevel(level) {
+    this.level = level;
+    console.log("Level set to: ", this.level);
+  }
+  setStrength(strength) {
+    this.strength = strength;
+    console.log("Strength set to: ", this.strength);
+    this.checkLevelUp();
+  }
+  setHappiness(happiness) {
+    this.happiness = happiness;
+    console.log("Happiness set to: ", this.happiness);
+    this.happinessCheck();
+  }
+  setStage(stage) {
+    this.stage = stage;
+    console.log("Stage set to: ", this.stage);
+  }
+  setMood(mood) {
+    this.mood = mood;
+    console.log("Mood set to: ", this.mood);
+  }
+  setTargetCalories(targetCalories) {
+    this.targetCalories = targetCalories;
+    console.log("Target Calories set to: ", this.targetCalories);
+  }
+  setTargetWeight(targetWeight) {
+    this.targetWeight = targetWeight;
+    console.log("Target Weight set to: ", this.targetWeight);
+  }
+  setImage(image) {
+    this.image = image;
+    console.log("Image set to: ", this.image);
+  }
+  setName(name) {
+    this.name = name;
+    console.log("Name set to: ", this.name);
+  }
+  setMood(mood) {
+    this.mood = mood;
+    console.log("Mood set to: ", this.mood);
+  }
+  setChestMeter(chest_meter) {
+    this.chest_meter = chest_meter;
+    console.log("Chest meter set to: ", this.chest_meter);
+  }
+  setTricepsMeter(triceps_meter) {
+    this.triceps_meter = triceps_meter;
+    console.log("Triceps meter set to: ", this.triceps_meter);
+  }
+  setBackMeter(back_meter) {
+    this.back_meter = back_meter;
+    console.log("Back meter set to: ", this.back_meter);
+  }
+  setBicepsMeter(biceps_meter) {
+    this.biceps_meter = biceps_meter;
+    console.log("Biceps meter set to: ", this.biceps_meter);
+  }
+  setShoulderMeter(shoulder_meter) {
+    this.shoulder_meter = shoulder_meter;
+    console.log("Shoulder meter set to: ", this.shoulder_meter);
+  }
+  setLegMeter(leg_meter) {
+    this.leg_meter = leg_meter;
+    console.log("Leg meter set to: ", this.leg_meter);
+  }
+  setFullPet(
     name,
     level,
     image,
-    hunger,
     targetCalories,
     targetWeight,
+    hunger,
     strength,
     happiness,
-    stage
+    stage,
+    mood,
+    chest_meter,
+    triceps_meter,
+    back_meter,
+    biceps_meter,
+    shoulder_meter,
+    leg_meter
   ) {
     this.name = name;
     this.level = level;
     this.image = image;
-    this.hunger = hunger;
-    this.targetWeight = targetWeight;
     this.targetCalories = targetCalories;
+    this.targetWeight = targetWeight;
+    this.hunger = hunger;
     this.strength = strength;
     this.happiness = happiness;
-
     this.stage = stage;
-    this.mood = "happy"; // Default mood
-
-    this.chest_meter = 0;
-    this.triceps_meter = 0;
-    this.shoulder_meter = 0;
-    this.biceps_meter = 0;
-    this.leg_meter = 0;
+    this.mood = mood;
+    this.chest_meter = chest_meter;
+    this.triceps_meter = triceps_meter;
+    this.back_meter = back_meter;
+    this.biceps_meter = biceps_meter;
+    this.shoulder_meter = shoulder_meter;
+    this.leg_meter = leg_meter;
   }
 
+  //---------- Getters for Buddy properties-----------------
+  getName() {
+    return this.name;
+  }
+  getLevel() {
+    return this.level;
+  }
+  getImage() {
+    return this.image;
+  }
+  getHunger() {
+    return this.hunger;
+  }
+  getTargetWeight() {
+    return this.targetWeight;
+  }
+  getTargetCalories() {
+    return this.targetCalories;
+  }
+  getStrength() {
+    return this.strength;
+  }
+  getHappiness() {
+    return this.happiness;
+  }
+  getStage() {
+    return this.stage;
+  }
+  getMood() {
+    return this.mood;
+  }
+  getChestMeter() {
+    return this.chest_meter;
+  }
+  getTricepsMeter() {
+    return this.triceps_meter;
+  }
+  getBackMeter() {
+    return this.back_meter;
+  }
+  getBicepsMeter() {
+    return this.biceps_meter;
+  }
+  getShoulderMeter() {
+    return this.shoulder_meter;
+  }
+  getLegMeter() {
+    return this.leg_meter;
+  }
+
+  // ---------Methods for Buddy actions-----------
   getRequiredStrengthForLevel() {
     return 100 * this.level * this.level;
   }
 
   addStrength(weight, reps) {
-    const points = weight * reps * 0.1;
+    const points = Math.floor(weight * reps * 0.1);
     this.strength += points;
     console.log("Strength increased by: ", points);
     this.checkLevelUp();

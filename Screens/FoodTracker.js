@@ -40,17 +40,7 @@ const FoodTracker = ({ navigation }) => {
         const lastDate = result.length > 0 ? result[0].date : null;
         if (lastDate != getFormattedDate()) {
           pet.resetHunger();
-          setPet(
-            new Buddy(
-              pet.name,
-              pet.level,
-              pet.image,
-              pet.hunger,
-              pet.targetCalories,
-              pet.strength,
-              pet.stage
-            )
-          );
+          setPet(pet);
         } else {
           console.log("Date is the same, no reset needed");
         }
@@ -147,46 +137,48 @@ const FoodTracker = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Log your Foods</Text>
+      <View style={styles.card}>
+        <Text style={styles.title_text}>Meal Journal</Text>
 
-      <TextInput
-        placeholder="Food name"
-        value={fname}
-        onChangeText={setFname}
-        style={styles.reps_box}
-      />
+        <TextInput
+          placeholder="Food name"
+          value={fname}
+          onChangeText={setFname}
+          style={styles.reps_box}
+        />
 
-      <TextInput
-        placeholder="Calories"
-        value={calories}
-        onChangeText={setCalories}
-        keyboardType="numeric"
-        style={styles.weight_box}
-      />
-
-      <TouchableOpacity
-        onPress={() => saveFood(fname, calories)}
-        style={styles.button}
-      >
-        <Text style={styles.button_text}>Save</Text>
-      </TouchableOpacity>
-
-      <View style={styles.button_container}>
-        <TouchableOpacity
-          style={styles.option_buttons}
-          onPress={() => {
-            navigation.navigate("FoodHistory");
-          }}
-        >
-          <Text style={styles.button_text}>History</Text>
-        </TouchableOpacity>
+        <TextInput
+          placeholder="Calories"
+          value={calories}
+          onChangeText={setCalories}
+          keyboardType="numeric"
+          style={styles.weight_box}
+        />
 
         <TouchableOpacity
-          onPress={() => warningTruncateTable()}
+          onPress={() => saveFood(fname, calories)}
           style={styles.button}
         >
-          <Text style={styles.button_text}>DELETE ALL</Text>
+          <Text style={styles.button_text}>Save</Text>
         </TouchableOpacity>
+
+        <View style={styles.button_container}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("FoodHistory");
+            }}
+          >
+            <Text style={styles.button_text}>History</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => warningTruncateTable()}
+            style={styles.button}
+          >
+            <Text style={styles.button_text}>DELETE ALL</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -197,7 +189,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#caf0f8",
+    backgroundColor: "#121212",
   },
   dropdown: {
     width: 250,
@@ -205,12 +197,17 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   button: {
-    backgroundColor: "#00b4d8",
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    marginVertical: 10,
+    backgroundColor: "#3A7D44",
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 5,
+    alignItems: "center",
+  },
+
+  button_text: {
+    color: "#E6E6E6",
     fontWeight: "bold",
+    fontSize: 16,
   },
   text: {
     fontWeight: "bold",
@@ -238,12 +235,11 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "white",
   },
-  button_text: {
-    fontWeight: "bold",
-  },
+
   button_container: {
-    alignItems: "center",
-    flexDirection: "row",
+    lexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 15,
   },
   option_buttons: {
     backgroundColor: "#00b4d8",
@@ -255,6 +251,25 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     padding: 8,
+  },
+  card: {
+    backgroundColor: "#1E1E1E",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  title_text: {
+    fontWeight: "bold",
+    fontSize: 25,
+    color: "#A8E6CF",
+    textAlign: "center",
+    marginBottom: 8,
+    marginTop: 7,
   },
 });
 

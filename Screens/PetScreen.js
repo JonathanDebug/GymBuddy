@@ -81,63 +81,147 @@ export default function PetScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>Manage Pet</Text>
-      <Text> Name: {pet.name}</Text>
-      <TouchableOpacity onPress={() => setOpen(!open)}>
-        <Text> Change name </Text>
-      </TouchableOpacity>
-      {open && (
-        <>
-          <TextInput
-            placeholder="Enter New Name"
-            value={name}
-            onChangeText={setName}
-          ></TextInput>
-          <TouchableOpacity onPress={() => handleSaveName(name)}>
-            <Text> Save name </Text>
-          </TouchableOpacity>
-        </>
-      )}
+      <Text style={styles.title}>Manage Pet</Text>
+      <View style={styles.card}>
+        <Text style={styles.key_text}>
+          Name: <Text style={styles.text}> {pet.name} </Text>
+        </Text>
 
-      <Text> Target Calories: {pet.targetCalories}</Text>
-      <TouchableOpacity onPress={() => setOpenCal(!opencal)}>
-        <Text> Change target calories </Text>
-      </TouchableOpacity>
-      {opencal && (
-        <>
-          <TextInput
-            placeholder="Enter New Target Calories"
-            value={calories}
-            onChangeText={setCalories}
-          ></TextInput>
-          <TouchableOpacity onPress={() => handleSaveCalories(calories)}>
-            <Text> Save Target Calories </Text>
-          </TouchableOpacity>
-        </>
-      )}
+        <TouchableOpacity style={styles.button} onPress={() => setOpen(!open)}>
+          <Text style={styles.button_text}> Edit name </Text>
+        </TouchableOpacity>
+        {open && (
+          <>
+            <TextInput
+              style={styles.text_box}
+              placeholder="Enter New Name"
+              value={name}
+              onChangeText={setName}
+            ></TextInput>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleSaveName(name)}
+            >
+              <Text style={styles.button_text}> Save </Text>
+            </TouchableOpacity>
+          </>
+        )}
 
-      <Text> Target Weight: {pet.targetWeight}</Text>
-      <TouchableOpacity onPress={() => setOpenWeight(!openweight)}>
-        <Text> Change target weight </Text>
-      </TouchableOpacity>
-      {openweight && (
-        <>
-          <TextInput
-            placeholder="Enter New Target Weight"
-            value={weight}
-            onChangeText={setWeight}
-          ></TextInput>
-          <TouchableOpacity onPress={() => handleSaveWeight(weight)}>
-            <Text> Save Target Weight </Text>
-          </TouchableOpacity>
-        </>
-      )}
+        <Text style={styles.key_text}>
+          Target Calories:
+          <Text style={styles.text}> {pet.getTargetCalories()} Calories </Text>
+        </Text>
 
-      <Text> Level: {pet.level}</Text>
-      <Text> Hunger: {pet.hunger}</Text>
-      <Text> Strength: {pet.strength}</Text>
-      <Text> Happiness: {pet.happiness} </Text>
-      <Text> Stage: {pet.stage} </Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setOpenCal(!opencal)}
+        >
+          <Text style={styles.button_text}> Edit target calories </Text>
+        </TouchableOpacity>
+        {opencal && (
+          <>
+            <TextInput
+              style={styles.text_box}
+              placeholder="Enter New Target Calories"
+              value={calories}
+              onChangeText={setCalories}
+            ></TextInput>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleSaveCalories(calories)}
+            >
+              <Text style={styles.button_text}> Edit Target Calories </Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        <Text style={styles.key_text}>
+          Target Weight:
+          <Text style={styles.text}>{pet.targetWeight} lbs</Text>
+        </Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setOpenWeight(!openweight)}
+        >
+          <Text style={styles.button_text}> Edit target weight </Text>
+        </TouchableOpacity>
+        {openweight && (
+          <>
+            <TextInput
+              style={styles.text_box}
+              placeholder="Enter New Target Weight"
+              value={weight}
+              onChangeText={setWeight}
+            ></TextInput>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleSaveWeight(weight)}
+            >
+              <Text style={styles.button_text}> Save </Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+
+      <View style={styles.stat_card}>
+        <Text style={styles.key_text}>
+          {" "}
+          Level:
+          <Text> {pet.level}</Text>
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Hunger:
+          <Text style={styles.text}> {pet.hunger} </Text>
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Strength: <Text style={styles.text}>{pet.strength}</Text>
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Happiness: <Text style={styles.text}>{pet.happiness} %</Text>
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Stage: <Text style={styles.text}>{pet.stage}</Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Mood: <Text style={styles.text}>{pet.mood}</Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Chest Meter: <Text style={styles.text}>{pet.chest_meter}%</Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Back Meter: <Text style={styles.text}>{pet.back_meter}%</Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Triceps Meter: <Text style={styles.text}>
+            {pet.triceps_meter}%
+          </Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Biceps Meter: <Text style={styles.text}>
+            {pet.biceps_meter}%
+          </Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Shoulder Meter: <Text style={styles.text}>
+            {pet.shoulder_meter}%
+          </Text>{" "}
+        </Text>
+        <Text style={styles.key_text}>
+          {" "}
+          Leg Meter: <Text style={styles.text}>{pet.leg_meter}%</Text>
+        </Text>
+      </View>
     </View>
   );
 }
@@ -145,7 +229,77 @@ export default function PetScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#121212",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#9FE2BF",
+    marginTop: 30,
+    textAlign: "center",
+  },
+  text: {
+    color: "#EAEAEA",
+    fontWeight: "bold",
+    marginVertical: 6,
+  },
+  key_text: {
+    color: "#A8E6CF",
+    fontWeight: "bold",
+    marginVertical: 6,
+  },
+
+  card: {
+    backgroundColor: "#1E1E1E",
+    borderWidth: 1,
+    borderRadius: 8,
+    marginVertical: 10,
+    alignSelf: "center",
+    width: "90%",
+    zIndex: 1000,
+    elevation: 1000,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 30,
+  },
+  stat_card: {
+    backgroundColor: "#1E1E1E",
+    borderWidth: 1,
+    borderRadius: 8,
+    marginVertical: 10,
+    alignSelf: "center",
+    width: "90%",
+    zIndex: 1000,
+    elevation: 1000,
+    alignItems: "center",
+    paddingVertical: 15,
+  },
+  text_box: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    height: 50,
+    marginVertical: 8,
+  },
+
+  button: {
+    backgroundColor: "#3A7D44",
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 5,
+    alignItems: "center",
+    width: "50%",
+  },
+  button_text: {
+    color: "#E6E6E6",
+    fontWeight: "bold",
+  },
+  subtitle_text: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "#B2F2BB",
+    textAlign: "center",
+    marginBottom: 8,
   },
 });

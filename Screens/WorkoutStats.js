@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as SQLite from "expo-sqlite";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { getWorkoutsDB } from "../initDB";
+import { getWorkoutsDB, getExercisesDB } from "../initDB";
 
 const WorkoutStats = () => {
   const [workouts, setWorkouts] = useState([]);
@@ -20,9 +20,28 @@ const WorkoutStats = () => {
   const [bestVolume, setBestVolume] = useState(0);
   const [selectedExercise, setSelectedExercise] = useState(null);
 
-  const exercises = require("../exercises.json");
+  const getExercises = async () => {
+    const db = getExercisesDB();
+    if (!db) {
+      console.log("Exercises DB not initialized yet.");
+      return [];
+    }
+    try {
+      const result = await db.getAllAsync("SELECT name FROM exercises");
+
+      const exerciseItems = result.map((ex) => ({
+        label: ex.name,
+        value: ex.name,
+      }));
+      const itemsWithAll = [{ label: "All", value: "all" }, ...exerciseItems];
+      setItems(itemsWithAll);
+    } catch (error) {
+      console.error("Error fetching exercises:", error);
+    }
+  };
+
   useEffect(() => {
-    setItems(exercises);
+    getExercises();
   }, []); // Adding the ,[] makes it so it runs once
 
   useEffect(() => {
